@@ -431,10 +431,14 @@ th .fx { border-color: currentColor; color: var(--navy-ink); }
 .sec-f { grid-column: 1 / -1; font-size: 13.5px; padding-top: 9px; margin-top: 2px; }
 .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 @media (min-width: 640px) { .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (min-width: 1180px) { .kpis { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+@media (min-width: 1400px) { .kpis { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
 .kpi { padding: 13px 15px; gap: 3px; border-radius: 10px; }
 .kpi span { font-size: 14px; }
-.kpi b { font-size: 27px; }
+.kpi b { font-size: 24px; white-space: nowrap; }
+/* each figure tile sizes its value to the tile width so it always stays on one line */
+.kpi { container-type: inline-size; min-width: 0; }
+@supports (font-size: 1cqi) { .kpi b { font-size: clamp(18px, 16.5cqi, 30px); } }
+.kpi b .cur { font-style: normal; font-size: .58em; font-weight: 600; color: var(--ink-2); margin-right: 4px; }
 .kpi small { font-size: 13.5px; line-height: 1.4; }
 
 @media (prefers-reduced-motion: reduce) { .tile, .sec, .sec .ico, .sec-f .go { transition: none; } .tile:hover, .sec:hover, .sec:focus-visible { transform: none; } .sec:hover .go { transform: none; } }
@@ -944,7 +948,7 @@ function viewOverview(D) {
     k("EOT", `${fmtCalcPlain("forecast.eotClaim", D) || "–"} days`, `Claimed · approved ${D.forecast.eotApproved == null || D.forecast.eotApproved === "" ? "–" : fN(num(D.forecast.eotApproved))}`, "", "eot"),
     k("Critical issues", `${open} open`, `${(D.issues || []).length} logged`, open ? "warn" : "good", "issues"),
     k("HSE manhours", man ? fN(num(man.total)) : "–", `${fat ? fN(num(fat.total) || 0) : "–"} fatalities to date`, fat && num(fat.total) ? "bad" : "good", "hse"),
-    k("Paid to date", "AED " + (num(D.payment.paid) != null ? fN(num(D.payment.paid) / 1e6, 2) + "M" : "–"), `${fmtCalcPlain("payment.paidPct", D)} of certified`, "", "payment")
+    k("Paid to date", `<em class="cur">AED</em>` + (num(D.payment.paid) != null ? fN(num(D.payment.paid) / 1e6, 2) + "M" : "–"), `${fmtCalcPlain("payment.paidPct", D)} of certified`, "", "payment")
   ].join("");
   return `<div class="vh"><div class="eyebrow">Overview · Report No. ${esc(D.contract.reportNo || "–")} · ${fmtD(D.contract.reportDate)}</div><h2>Project at a glance</h2></div>
     <div class="secs" role="list" aria-label="Dashboard sections">${Object.keys(SECTIONS).map(s => secCard(+s, D)).join("")}</div>
