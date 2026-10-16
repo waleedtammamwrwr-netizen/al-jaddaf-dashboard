@@ -1,0 +1,962 @@
+{
+    "info":  {
+                 "name":  "Proposed (2B+G+2P+H.C+21+R) Residential and Commercial Building at Al Jaddaf Waterfront Plot no. 3260953, Dubai, UAE",
+                 "number":  "",
+                 "config":  "Proposed (2B+G+2P+H.C+21+R) Residential and Commercial Building",
+                 "consultant":  "Golden Square Engineering Consultants LLC",
+                 "contractor":  "Ground up Construction \u0026 Building Maintenance LLC",
+                 "operator":  "N/A",
+                 "idConsultant":  "N/A",
+                 "revision":  "REV.00",
+                 "cpi":  null
+             },
+    "stats":  {
+                  "gfa":  213109.59,
+                  "bua":  406932.1,
+                  "nsa":  173954.47985,
+                  "common":  38373.56,
+                  "external":  43806.28,
+                  "covered":  406932.1,
+                  "total":  406932.1,
+                  "plot":  29097.31,
+                  "keysApt":  "258",
+                  "keysServiced":  "N/A",
+                  "keysBranded":  "N/A"
+              },
+    "contract":  {
+                     "reportNo":  "1",
+                     "reportDate":  "2026-10-11",
+                     "commencement":  "2024-07-01",
+                     "completion":  "2027-07-03",
+                     "revisedCompletion":  "2027-12-31",
+                     "temp":  "",
+                     "wildAir":  "",
+                     "perm":  ""
+                 },
+    "forecast":  {
+                     "eotApproved":  null,
+                     "actualStart":  "2024-11-04",
+                     "forecastContractor":  "2027-12-31",
+                     "forecastTeam":  "2027-12-31",
+                     "temp":  "",
+                     "wildAir":  "",
+                     "perm":  ""
+                 },
+    "hse":  [
+                {
+                    "item":  "Manhours",
+                    "monthly":  65520,
+                    "total":  528020
+                },
+                {
+                    "item":  "First Aid Case",
+                    "monthly":  2,
+                    "total":  13
+                },
+                {
+                    "item":  "Near Misses",
+                    "monthly":  1,
+                    "total":  2
+                },
+                {
+                    "item":  "Fatalities",
+                    "monthly":  0,
+                    "total":  0
+                },
+                {
+                    "item":  "Injuries",
+                    "monthly":  0,
+                    "total":  2
+                },
+                {
+                    "item":  "Accidents / Incidents",
+                    "monthly":  0,
+                    "total":  0
+                },
+                {
+                    "item":  "Open NCR\u0027s",
+                    "monthly":  0,
+                    "total":  0
+                },
+                {
+                    "item":  "Open SOR\u0027s",
+                    "monthly":  1,
+                    "total":  0
+                }
+            ],
+    "history":  [
+                    {
+                        "ref":  "DS-Civil-JW-004-R1",
+                        "date":  "2024-07-27",
+                        "desc":  "Resubmit- Base line Program"
+                    },
+                    {
+                        "ref":  "DS-Civil-JW-004-R2",
+                        "date":  "2024-08-10",
+                        "desc":  "Base line program approved as noted"
+                    },
+                    {
+                        "ref":  "DS-Civil-JW-004-R3",
+                        "date":  "2026-01-12",
+                        "desc":  "Revised Base line program - Resubmit"
+                    },
+                    {
+                        "ref":  "DS-Civil-JW-004-R4",
+                        "date":  "2026-09-01",
+                        "desc":  "Revised Base line program - Resubmit"
+                    },
+                    {
+                        "ref":  "DS-Civil-JW-004-R5",
+                        "date":  "2026-09-28",
+                        "desc":  "Revised Base line program - Under Engineer Review"
+                    }
+                ],
+    "performance":  {
+                        "programme":  "The work is ongoing at site in line with the revised programme, there is little slippage in MEP Works - 2nd fix, mainly in riser works, Clearance for False ceiling closure.",
+                        "budget":  "The origional project budget can not be achieved due to material escalation in prices due to geopolitical crises."
+                    },
+    "milestones":  [
+                       {
+                           "item":  "Structure Works",
+                           "baseline":  "2027-03-03",
+                           "forecast":  "2027-02-10",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "Internal Block",
+                           "baseline":  "2027-04-06",
+                           "forecast":  "2027-04-06",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "Internal Plastering Works",
+                           "baseline":  "2027-05-28",
+                           "forecast":  "2027-05-28",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "MEP 2nd Fix",
+                           "baseline":  "2027-06-30",
+                           "forecast":  "2027-06-30",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "Ceiling Closure - Apartments",
+                           "baseline":  "2027-07-08",
+                           "forecast":  "2027-07-08",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "Floor Tiling Works",
+                           "baseline":  "2027-07-30",
+                           "forecast":  "2027-07-30",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "Wall Tiling Works",
+                           "baseline":  "2027-05-28",
+                           "forecast":  "2027-05-28",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "External Block Works",
+                           "baseline":  "2027-04-08",
+                           "forecast":  "2027-04-08",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "External Plaster Works",
+                           "baseline":  "2027-07-20",
+                           "forecast":  "2027-07-20",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "Aluminium \u0026 Glazing Works",
+                           "baseline":  "2027-10-08",
+                           "forecast":  "2027-10-08",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "Lifts/ Garbage Chute",
+                           "baseline":  "2027-06-28",
+                           "forecast":  "2027-06-28",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "Roofing Works",
+                           "baseline":  "2027-08-12",
+                           "forecast":  "2027-08-12",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "Obtaining BCC",
+                           "baseline":  "2027-11-15",
+                           "forecast":  "2027-11-15",
+                           "reason":  ""
+                       },
+                       {
+                           "item":  "T\u0026C and Handing over",
+                           "baseline":  "2027-12-31",
+                           "forecast":  "2027-12-31",
+                           "reason":  ""
+                       }
+                   ],
+    "issues":  [
+                   {
+                       "desc":  "DCM Works in ROW - dewatering completion submitted and a waiting DCM approval",
+                       "action":  "Meeting held with DCM to close the pending NOC",
+                       "by":  "GroundUP",
+                       "status":  "Open",
+                       "due":  "2026-10-05"
+                   },
+                   {
+                       "desc":  "Adjacent plot owners have restricted site access, which may impact construction activities and overall project progress.",
+                       "action":  "coordination with Neighbour",
+                       "by":  "GroundUP",
+                       "status":  "Open",
+                       "due":  ""
+                   },
+                   {
+                       "desc":  "Road access on the DEWA side has been closed by the RTA subcontractor, limiting access to the project and affecting site operations.",
+                       "action":  "coordination with infra structure subcontractor / email for record shared to DCM",
+                       "by":  "GroundUP",
+                       "status":  "Open",
+                       "due":  ""
+                   },
+                   {
+                       "desc":  "Substation and RMU Dewa estimation fees Paid but not showing in Dewa system and affecting HV Dewa inspection .",
+                       "action":  "Fees Paid - Substation HV inspection done and approved",
+                       "by":  "GroundUP",
+                       "status":  "Closed",
+                       "due":  ""
+                   },
+                   {
+                       "desc":  "Shortage of PT strands in the local market may impact post-tensioning activities Materials has been secured till 8th Floor- (9 to 15 Floors -PT materials will be booked )",
+                       "action":  "Materials booked till 15th Floor Slab",
+                       "by":  "GroundUP",
+                       "status":  "Open",
+                       "due":  "2026-10-31"
+                   },
+                   {
+                       "desc":  "Interior Design (ID) drawings for the Health Club, Common area and Main Entrance, Upper floors have not yet been issued, which may impact procurement and all finishing works.",
+                       "action":  "Subject highlighted to consultant as well as Client and still waiting approval",
+                       "by":  "GS/Client",
+                       "status":  "Open",
+                       "due":  ""
+                   },
+                   {
+                       "desc":  "The Client has decided to limit the project scope up to the end of 2026 to the completion of the superstructure concrete, blockwork and the procurement of the HVAC units only.",
+                       "action":  "Client issued instruction to resume the finishing work on 20 Sep 2026",
+                       "by":  "Client",
+                       "status":  "Open",
+                       "due":  ""
+                   },
+                   {
+                       "desc":  "Market inflation has significantly impacted the overall project cost. The resulting cost escalation has been discussed with the Client and submitted for review and approval.",
+                       "action":  "escalation in all materials affect on project cost- variation will be discussed with client and finalized",
+                       "by":  "Client / Groundup",
+                       "status":  "Open",
+                       "due":  ""
+                   },
+                   {
+                       "desc":  "The Variation Order (VO) has been discussed with the Client and is currently awaiting the Client\u0027s review and approval",
+                       "action":  "",
+                       "by":  "",
+                       "status":  "",
+                       "due":  ""
+                   },
+                   {
+                       "desc":  "Client instruction to suspend finishing works after completion of blockwork until further notice, which will impact the project progress and planned activities.",
+                       "action":  "",
+                       "by":  "",
+                       "status":  "",
+                       "due":  ""
+                   },
+                   {
+                       "desc":  "The timely completion of the project is dependent upon the prompt award and mobilization of all remaining subcontract packages, enabling the commencement of the outstanding finishing works in accordance with the project programme",
+                       "action":  "",
+                       "by":  "",
+                       "status":  "",
+                       "due":  ""
+                   },
+                   {
+                       "desc":  "IFC drawings for the 18th, 19th, 20th, and 21st Floors have been issued by the Consultant, Authority Approval obtained and after obtaining still modification on going for 20th and above floors.",
+                       "action":  "PT design submitted from 18th to 21th Floor and a waiting DDA approval - Roof still pending subjected to finalize all equipement loads",
+                       "by":  "GroundUP/PT specialist / GS",
+                       "status":  "Open",
+                       "due":  "2026-10-10"
+                   }
+               ],
+    "achievements":  [
+                         {
+                             "text":  "13th Floor Slab has been completed, 14th floor slab in progress."
+                         },
+                         {
+                             "text":  "10th Floor block work on going with percentage of 70%, 9th floor completed."
+                         },
+                         {
+                             "text":  "8th Floor block work is completed."
+                         },
+                         {
+                             "text":  "Block Work completed at HC and 1st Floor, 2nd floor,3rd ,4th, 5th, 6th and 7th floor Completed"
+                         },
+                         {
+                             "text":  "Plaster Preparation works are going on for 3rd and 4th floor."
+                         },
+                         {
+                             "text":  "Plaster works in 1st \u0026 2nd floor completed."
+                         },
+                         {
+                             "text":  "Blockwork is progressing from Basement 2 to Podium 2, with overall progress reaching 90%."
+                         },
+                         {
+                             "text":  "Internal plastering works are progressing from Basement 2 to Podium 2, with overall progress reaching 90%."
+                         },
+                         {
+                             "text":  "First coat ceiling painting is in progress from Basement 2 to Podium 2."
+                         },
+                         {
+                             "text":  "High-level MEP Second Fix works are progressing from Basement 2 to the 8th Floor."
+                         }
+                     ],
+    "authorities":  [
+                        {
+                            "desc":  "DDA Building Permit",
+                            "status":  "Complete",
+                            "issued":  "2026-08-11",
+                            "expiry":  "2028-07-17",
+                            "notes":  ""
+                        },
+                        {
+                            "desc":  "DEWA Power NOC",
+                            "status":  "Complete",
+                            "issued":  "2026-02-09",
+                            "expiry":  "2026-08-08",
+                            "notes":  "Expired"
+                        },
+                        {
+                            "desc":  "DEWA Water NOC",
+                            "status":  "Complete",
+                            "issued":  "2026-04-10",
+                            "expiry":  "2026-10-09",
+                            "notes":  "Expired"
+                        },
+                        {
+                            "desc":  "RTA NOC",
+                            "status":  "Complete",
+                            "issued":  "",
+                            "expiry":  "",
+                            "notes":  ""
+                        },
+                        {
+                            "desc":  "Civil Defense NOC",
+                            "status":  "Complete",
+                            "issued":  "2025-10-16",
+                            "expiry":  "",
+                            "notes":  ""
+                        },
+                        {
+                            "desc":  "Etisalat/Du NOC",
+                            "status":  "Complete",
+                            "issued":  "2026-07-30",
+                            "expiry":  "2027-01-29",
+                            "notes":  ""
+                        },
+                        {
+                            "desc":  "DEWA Drainage NOC \u0026 Mech.Ventilation",
+                            "status":  "Complete",
+                            "issued":  "",
+                            "expiry":  "",
+                            "notes":  ""
+                        },
+                        {
+                            "desc":  "Dubai.Municipality Structure Building Permit",
+                            "status":  "Complete",
+                            "issued":  "",
+                            "expiry":  "",
+                            "notes":  ""
+                        },
+                        {
+                            "desc":  "Dub.Municipality Architecture Building Permit",
+                            "status":  "Complete",
+                            "issued":  "",
+                            "expiry":  "",
+                            "notes":  ""
+                        }
+                    ],
+    "finalnoc":  [
+                     {
+                         "desc":  "DEWA Power NOC",
+                         "status":  "",
+                         "issued":  "",
+                         "expiry":  "",
+                         "notes":  ""
+                     },
+                     {
+                         "desc":  "DEWA Water NOC",
+                         "status":  "",
+                         "issued":  "",
+                         "expiry":  "",
+                         "notes":  ""
+                     },
+                     {
+                         "desc":  "DEWA Gas NOC",
+                         "status":  "",
+                         "issued":  "",
+                         "expiry":  "",
+                         "notes":  ""
+                     },
+                     {
+                         "desc":  "Civil Defense NOC",
+                         "status":  "",
+                         "issued":  "",
+                         "expiry":  "",
+                         "notes":  ""
+                     },
+                     {
+                         "desc":  "Etisalat/Du NOC",
+                         "status":  "",
+                         "issued":  "",
+                         "expiry":  "",
+                         "notes":  ""
+                     },
+                     {
+                         "desc":  "Drainage NOC",
+                         "status":  "",
+                         "issued":  "",
+                         "expiry":  "",
+                         "notes":  ""
+                     },
+                     {
+                         "desc":  "Dubai Municipality. BCC",
+                         "status":  "",
+                         "issued":  "",
+                         "expiry":  "",
+                         "notes":  ""
+                     }
+                 ],
+    "payment":  {
+                    "workDone":  77090778.68,
+                    "varClaimed":  0,
+                    "certNoVar":  74377654.14,
+                    "certWithVar":  74377655.14,
+                    "paid":  69165857.29
+                },
+    "variations":  {
+                       "claimed":  0,
+                       "certified":  0,
+                       "paid":  0
+                   },
+    "eot":  [
+                {
+                    "no":  "1",
+                    "claim":  "Interim Extension of Time Claim-1",
+                    "subDate":  "2026-09-28",
+                    "subRef":  "",
+                    "subType":  "Interim Particulars",
+                    "cost":  null,
+                    "time":  181,
+                    "respDate":  "",
+                    "respRef":  "",
+                    "comments":  "Approved, Revised date is 31-Dec-27."
+                }
+            ],
+    "progress":  {
+                     "rows":  [
+                                  {
+                                      "name":  "Engineering Works/ Design",
+                                      "weight":  7.5,
+                                      "cumPlan":  57,
+                                      "cumAct":  56,
+                                      "planWk":  2,
+                                      "actWk":  1.5
+                                  },
+                                  {
+                                      "name":  "Procurement",
+                                      "weight":  7.5,
+                                      "cumPlan":  27,
+                                      "cumAct":  25,
+                                      "planWk":  1.5,
+                                      "actWk":  1.5
+                                  },
+                                  {
+                                      "name":  "Construction",
+                                      "weight":  85,
+                                      "cumPlan":  36.1,
+                                      "cumAct":  35.75,
+                                      "planWk":  1.05,
+                                      "actWk":  0.75
+                                  }
+                              ],
+                     "mockup":  {
+                                    "label":  "Mock Up Units Ready for Employer Inspection",
+                                    "planned":  "In Progress",
+                                    "actual":  "In Progress"
+                                },
+                     "remarks":  ""
+                 },
+    "scurve":  [
+                   {
+                       "m":  "2024-07",
+                       "plan":  null,
+                       "act":  0.07
+                   },
+                   {
+                       "m":  "2024-08",
+                       "plan":  null,
+                       "act":  0.1373
+                   },
+                   {
+                       "m":  "2024-09",
+                       "plan":  null,
+                       "act":  0.2025
+                   },
+                   {
+                       "m":  "2024-10",
+                       "plan":  null,
+                       "act":  0.2698
+                   },
+                   {
+                       "m":  "2024-11",
+                       "plan":  null,
+                       "act":  0.335
+                   },
+                   {
+                       "m":  "2024-12",
+                       "plan":  null,
+                       "act":  0.4023
+                   },
+                   {
+                       "m":  "2025-01",
+                       "plan":  null,
+                       "act":  0.4696
+                   },
+                   {
+                       "m":  "2025-02",
+                       "plan":  null,
+                       "act":  0.5304
+                   },
+                   {
+                       "m":  "2025-03",
+                       "plan":  null,
+                       "act":  0.5978
+                   },
+                   {
+                       "m":  "2025-04",
+                       "plan":  null,
+                       "act":  0.6629
+                   },
+                   {
+                       "m":  "2025-05",
+                       "plan":  null,
+                       "act":  0.8101
+                   },
+                   {
+                       "m":  "2025-06",
+                       "plan":  null,
+                       "act":  1.0201
+                   },
+                   {
+                       "m":  "2025-07",
+                       "plan":  null,
+                       "act":  2.5204
+                   },
+                   {
+                       "m":  "2025-08",
+                       "plan":  null,
+                       "act":  3.5945
+                   },
+                   {
+                       "m":  "2025-09",
+                       "plan":  null,
+                       "act":  6.7145
+                   },
+                   {
+                       "m":  "2025-10",
+                       "plan":  null,
+                       "act":  9.1638
+                   },
+                   {
+                       "m":  "2025-11",
+                       "plan":  null,
+                       "act":  12.199
+                   },
+                   {
+                       "m":  "2025-12",
+                       "plan":  null,
+                       "act":  13.7142
+                   },
+                   {
+                       "m":  "2026-01",
+                       "plan":  null,
+                       "act":  15.3576
+                   },
+                   {
+                       "m":  "2026-02",
+                       "plan":  null,
+                       "act":  17.1619
+                   },
+                   {
+                       "m":  "2026-03",
+                       "plan":  null,
+                       "act":  18.9394
+                   },
+                   {
+                       "m":  "2026-04",
+                       "plan":  null,
+                       "act":  20.5335
+                   },
+                   {
+                       "m":  "2026-05",
+                       "plan":  null,
+                       "act":  23.1129
+                   },
+                   {
+                       "m":  "2026-06",
+                       "plan":  null,
+                       "act":  25.6757
+                   },
+                   {
+                       "m":  "2026-07",
+                       "plan":  28.72,
+                       "act":  28.7157
+                   },
+                   {
+                       "m":  "2026-08",
+                       "plan":  31.5829,
+                       "act":  31.7
+                   },
+                   {
+                       "m":  "2026-09",
+                       "plan":  35.1198,
+                       "act":  35
+                   },
+                   {
+                       "m":  "2026-10",
+                       "plan":  39.421,
+                       "act":  35.75
+                   },
+                   {
+                       "m":  "2026-11",
+                       "plan":  44.049,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2026-12",
+                       "plan":  49.9414,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-01",
+                       "plan":  55.3422,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-02",
+                       "plan":  60.0319,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-03",
+                       "plan":  66.8841,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-04",
+                       "plan":  73.7863,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-05",
+                       "plan":  80.9751,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-06",
+                       "plan":  86.2263,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-07",
+                       "plan":  91.8404,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-08",
+                       "plan":  95.3224,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-09",
+                       "plan":  97.1809,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-10",
+                       "plan":  98.3159,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-11",
+                       "plan":  99.0101,
+                       "act":  null
+                   },
+                   {
+                       "m":  "2027-12",
+                       "plan":  100.0025,
+                       "act":  null
+                   }
+               ],
+    "manpower":  [
+                     {
+                         "m":  "2024-07",
+                         "plan":  null,
+                         "act":  17.884615384615383
+                     },
+                     {
+                         "m":  "2024-08",
+                         "plan":  null,
+                         "act":  17.884615384615383
+                     },
+                     {
+                         "m":  "2024-09",
+                         "plan":  null,
+                         "act":  17.307692307692307
+                     },
+                     {
+                         "m":  "2024-10",
+                         "plan":  null,
+                         "act":  17.884615384615383
+                     },
+                     {
+                         "m":  "2024-11",
+                         "plan":  null,
+                         "act":  17.307692307692307
+                     },
+                     {
+                         "m":  "2024-12",
+                         "plan":  null,
+                         "act":  18.6
+                     },
+                     {
+                         "m":  "2025-01",
+                         "plan":  null,
+                         "act":  18.6
+                     },
+                     {
+                         "m":  "2025-02",
+                         "plan":  null,
+                         "act":  17.5
+                     },
+                     {
+                         "m":  "2025-03",
+                         "plan":  null,
+                         "act":  19.375
+                     },
+                     {
+                         "m":  "2025-04",
+                         "plan":  null,
+                         "act":  18
+                     },
+                     {
+                         "m":  "2025-05",
+                         "plan":  null,
+                         "act":  18.111538461538462
+                     },
+                     {
+                         "m":  "2025-06",
+                         "plan":  null,
+                         "act":  19.778260869565216
+                     },
+                     {
+                         "m":  "2025-07",
+                         "plan":  null,
+                         "act":  17.96923076923077
+                     },
+                     {
+                         "m":  "2025-08",
+                         "plan":  null,
+                         "act":  19.54230769230769
+                     },
+                     {
+                         "m":  "2025-09",
+                         "plan":  null,
+                         "act":  45.73076923076923
+                     },
+                     {
+                         "m":  "2025-10",
+                         "plan":  null,
+                         "act":  46.25769230769231
+                     },
+                     {
+                         "m":  "2025-11",
+                         "plan":  null,
+                         "act":  80.48076923076923
+                     },
+                     {
+                         "m":  "2025-12",
+                         "plan":  null,
+                         "act":  80.3
+                     },
+                     {
+                         "m":  "2026-01",
+                         "plan":  null,
+                         "act":  67.01923076923077
+                     },
+                     {
+                         "m":  "2026-02",
+                         "plan":  null,
+                         "act":  66.6375
+                     },
+                     {
+                         "m":  "2026-03",
+                         "plan":  null,
+                         "act":  103.35416666666667
+                     },
+                     {
+                         "m":  "2026-04",
+                         "plan":  null,
+                         "act":  155.71153846153845
+                     },
+                     {
+                         "m":  "2026-05",
+                         "plan":  null,
+                         "act":  223.51666666666668
+                     },
+                     {
+                         "m":  "2026-06",
+                         "plan":  null,
+                         "act":  231.58333333333334
+                     },
+                     {
+                         "m":  "2026-07",
+                         "plan":  null,
+                         "act":  224.0625
+                     },
+                     {
+                         "m":  "2026-08",
+                         "plan":  262.99615384615385,
+                         "act":  220
+                     },
+                     {
+                         "m":  "2026-09",
+                         "plan":  286.79615384615386,
+                         "act":  225
+                     },
+                     {
+                         "m":  "2026-10",
+                         "plan":  319.9423076923077,
+                         "act":  240
+                     },
+                     {
+                         "m":  "2026-11",
+                         "plan":  359.2576923076923,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2026-12",
+                         "plan":  401.28846153846155,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-01",
+                         "plan":  397.53076923076924,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-02",
+                         "plan":  376.3875,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-03",
+                         "plan":  478.1192307692308,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-04",
+                         "plan":  516.775,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-05",
+                         "plan":  487.1375,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-06",
+                         "plan":  354.04,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-07",
+                         "plan":  353.7692307692308,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-08",
+                         "plan":  226.1846153846154,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-09",
+                         "plan":  113.84615384615384,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-10",
+                         "plan":  92.81153846153846,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-11",
+                         "plan":  82.76153846153846,
+                         "act":  null
+                     },
+                     {
+                         "m":  "2027-12",
+                         "plan":  79.73076923076923,
+                         "act":  null
+                     }
+                 ],
+    "photos":  {
+                   "render":  [
+                                  {
+                                      "src":  "photos/render.jpg",
+                                      "caption":  "Package render"
+                                  }
+                              ],
+                   "exterior":  [
+                                    {
+                                        "src":  "photos/exterior-1.jpg",
+                                        "caption":  ""
+                                    },
+                                    {
+                                        "src":  "photos/exterior-2.jpg",
+                                        "caption":  ""
+                                    },
+                                    {
+                                        "src":  "photos/exterior-3.jpg",
+                                        "caption":  ""
+                                    }
+                                ],
+                   "interior":  [
+                                    {
+                                        "src":  "photos/interior-1.jpg",
+                                        "caption":  ""
+                                    },
+                                    {
+                                        "src":  "photos/interior-2.jpg",
+                                        "caption":  ""
+                                    }
+                                ]
+               },
+    "signoff":  {
+
+                },
+    "meta":  {
+                 "updatedAt":  "2026-10-16T20:04:06.390Z",
+                 "updatedBy":  null,
+                 "note":  "published from Project Dashboard - 11-Oct-26.xlsx"
+             }
+}
