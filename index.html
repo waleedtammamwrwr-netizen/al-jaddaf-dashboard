@@ -385,35 +385,57 @@ th .fx { border-color: currentColor; color: var(--navy-ink); }
 .sec[aria-current="true"] { border-color: var(--accent); outline-color: var(--accent); }
 .sec:hover .ico, .sec:focus-visible .ico, .sec[aria-current="true"] .ico { background: var(--accent); color: var(--accent-ink); }
 .h-ico { background: var(--accent); color: var(--accent-ink); }
+/* render photo fills the page */
+.photos.single { grid-template-columns: 1fr; justify-items: center; }
+.photos.single figure { width: 100%; justify-items: center; }
+.photos.single img { aspect-ratio: auto; width: auto; max-width: 100%; height: calc(100vh - 300px); min-height: 420px; object-fit: contain; background: transparent; border: 0; }
+
+/* presentation: controls on top, page scaled to the screen, no scrolling */
+.presenting .main { padding-block: 10px 10px; }
+.presenting .wrap { gap: 10px; max-width: 1600px; }
+.present-bar { flex-direction: column; gap: 8px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); padding-bottom: 4px; }
+.presenting .present-bar { display: flex; align-items: stretch; }
+.pb-top { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; justify-content: space-between; }
+.pb-count { font: 500 15px var(--f-display); color: var(--ink-2); }
+.pb-count b { color: var(--ink); }
+.pb-ctl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.speed { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--ink-2); }
+.speed select { padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); }
+.ptimer { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.ptimer i { display: block; height: 100%; width: 0; background: var(--accent); }
+.presenting .vh .stepper, .presenting .calc-note, .presenting details.data, .presenting .editbar { display: none !important; }
+.presenting .photos.single img { height: calc(100vh - 210px); min-height: 0; }
+.presenting .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
 .btn.danger { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
 .btn.danger:hover { filter: brightness(.97); }
 
 /* compact overview: all section icons and key figures visible on opening */
 .main { padding-block: 14px 56px; }
 .wrap { gap: 12px; }
-.brand .logo { height: 36px; }
+.brand .logo { height: 42px; }
 .band { font-size: 15px; padding: 8px 14px; }
 .proj { gap: 4px; }
-.proj h1 { font-size: clamp(18px, 1.7vw, 22px); }
-.meta { font-size: 14px; }
-.btn { padding: 6px 12px; font-size: 14px; }
+.proj h1 { font-size: clamp(20px, 2vw, 26px); }
+.meta { font-size: 15px; }
+.btn { padding: 7px 14px; font-size: 15px; }
 .vh { gap: 4px; }
-.vh h2 { font-size: clamp(22px, 2.2vw, 28px); }
-.secs { grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px; }
-.sec { grid-template-rows: none; grid-template-columns: 42px 1fr; align-items: start; gap: 6px 10px; padding: 12px; border-radius: 10px; }
-.sec .ico { width: 42px; height: 42px; border-radius: 10px; }
-.sec .ico svg { width: 23px; height: 23px; }
-.sec .k { font-size: 12px; }
-.sec b { font-size: 15px; line-height: 1.25; }
-.sec small { font-size: 13px; line-height: 1.4; }
-.sec-f { grid-column: 1 / -1; font-size: 12.5px; padding-top: 7px; margin-top: 2px; }
+.vh h2 { font-size: clamp(24px, 2.5vw, 31px); }
+.secs { grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 12px; }
+.sec { grid-template-rows: none; grid-template-columns: 50px 1fr; align-items: start; gap: 8px 12px; padding: 15px; border-radius: 12px; }
+.sec .ico { width: 50px; height: 50px; border-radius: 12px; }
+.sec .ico svg { width: 27px; height: 27px; }
+.sec .k { font-size: 13px; }
+.sec b { font-size: 17px; line-height: 1.25; }
+.sec small { font-size: 14px; line-height: 1.45; }
+.sec-f { grid-column: 1 / -1; font-size: 13.5px; padding-top: 9px; margin-top: 2px; }
 .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 @media (min-width: 640px) { .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (min-width: 1180px) { .kpis { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
-.kpi { padding: 10px 12px; gap: 2px; border-radius: 8px; }
-.kpi span { font-size: 13px; }
-.kpi b { font-size: 22px; }
-.kpi small { font-size: 12.5px; line-height: 1.35; }
+.kpi { padding: 13px 15px; gap: 3px; border-radius: 10px; }
+.kpi span { font-size: 14px; }
+.kpi b { font-size: 27px; }
+.kpi small { font-size: 13.5px; line-height: 1.4; }
 
 @media (prefers-reduced-motion: reduce) { .tile, .sec, .sec .ico, .sec-f .go { transition: none; } .tile:hover, .sec:hover, .sec:focus-visible { transform: none; } .sec:hover .go { transform: none; } }
 </style>
@@ -439,13 +461,20 @@ th .fx { border-color: currentColor; color: var(--navy-ink); }
       <div class="head-full">
         <div class="band"><span>Project Performance Dashboard</span><span id="rev"></span></div>
       </div>
-      <div class="present-bar">
-        <span class="eyebrow" id="present-count"></span>
-        <div class="stepper">
-          <button class="btn" type="button" id="p-prev">Previous</button>
-          <button class="btn" type="button" id="p-next">Next</button>
-          <button class="btn primary" type="button" id="p-exit">Exit presentation</button>
+      <div class="present-bar" role="toolbar" aria-label="Presentation controls">
+        <div class="pb-top">
+          <span class="pb-count" id="present-count" aria-live="polite"></span>
+          <div class="pb-ctl">
+            <button class="btn" type="button" id="p-replay" title="Start again from the dashboard">↺ Replay</button>
+            <button class="btn" type="button" id="p-prev" aria-label="Previous page">‹ Previous</button>
+            <button class="btn primary" type="button" id="p-play" aria-pressed="true">❚❚ Pause</button>
+            <button class="btn" type="button" id="p-next" aria-label="Next page">Next ›</button>
+            <label class="speed" for="p-speed">Each page
+              <select id="p-speed"><option value="5">5 s</option><option value="10" selected>10 s</option><option value="15">15 s</option><option value="20">20 s</option><option value="30">30 s</option></select></label>
+            <button class="btn" type="button" id="p-exit">Exit</button>
+          </div>
         </div>
+        <div class="ptimer" aria-hidden="true"><i id="p-bar"></i></div>
       </div>
       <div class="head-full proj">
         <h1 id="pname">Project dashboard</h1>
@@ -601,13 +630,13 @@ const statusPill = v => v ? `<span class="pill ${/complete/i.test(v) ? "good" : 
 const openPill = v => v ? `<span class="pill ${/closed/i.test(v) ? "good" : "warn"}">${esc(v)}</span>` : NIL;
 
 const TABLES = [
+  { id: "render", s: 1, title: "Package Render Photo", type: "photos", path: "photos.render", single: true, sum: D => `${(getP(D, "photos.render") || []).length} render image` },
   { id: "info", s: 1, title: "Project Information", type: "kv", path: "info", size: "narrow",
     fields: [{ k: "name", label: "Project Name", t: "long" }, { k: "number", label: "Project Number" }, { k: "config", label: "Project Configuration", t: "long" },
       { k: "consultant", label: "Consultant" }, { k: "contractor", label: "Main Works Contractor" }, { k: "operator", label: "Operator" },
       { k: "idConsultant", label: "ID Consultant" }, { k: "revision", label: "Dashboard Revision" },
       { group: "Earned Value Indices (Contractor's Programme)" }, { k: "cpi", label: "CPI (Cost Performance Index)", t: "num", dp: 2 }, { calc: "info.spi" }],
     sum: D => `SPI ${fmtCalcPlain("info.spi", D) || "–"} · ${D.info.consultant || ""}` },
-  { id: "render", s: 1, title: "Package Render Photo", type: "photos", path: "photos.render", single: true, sum: D => `${(getP(D, "photos.render") || []).length} render image` },
   { id: "stats", s: 1, title: "Project Stats and Info", type: "kv", path: "stats", size: "narrow",
     fields: [{ k: "gfa", label: "Gross Floor Area", unit: "sqft", t: "num" }, { k: "bua", label: "Built Up Area", unit: "sqft", t: "num" },
       { k: "nsa", label: "Net Leasable / Net Sellable Area", unit: "sqft", t: "num" }, { k: "common", label: "Common Area", unit: "sqft", t: "num" },
@@ -1027,7 +1056,11 @@ function render() {
   $("b-edit").hidden = !can || (!D && st.load !== "empty"); $("b-upload").hidden = !can || st.editing; $("b-download").hidden = !downloads || !D || st.editing; $("b-undo").hidden = !can || !st.hasPrev || st.editing;
   $("b-edit").innerHTML = st.editing ? "Editing…" : `<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>Edit tables`;
   $("b-edit").disabled = st.editing;
-  $("present-count").textContent = t ? `${t.n} / ${TABLES.length} · ${t.title}` : "Overview";
+  if (st.presenting) {
+    $("present-count").innerHTML = `<b>${slideIdx() + 1} / ${SLIDES().length}</b> · ${esc(t ? t.title : "Project at a glance")}`;
+    $("p-bar").style.width = Math.min(100, pres.elapsed / pres.ms * 100) + "%";
+    requestAnimationFrame(fitPresent);
+  } else $("view").style.zoom = "";
   document.title = t ? `${t.title} · Al Jaddaf Project Dashboard` : secOf(st.route) ? `${SECTIONS[secOf(st.route)]} · Al Jaddaf Project Dashboard` : "Al Jaddaf Project Dashboard";
   renderSignin();
   renderStatus();
@@ -1114,8 +1147,14 @@ document.addEventListener("keydown", e => {
   if (e.target.closest("input,textarea,select")) return;
   if (!$("modal").hidden) return;
   if (e.key === "Escape") { if (!$("pop").hidden) closePop(); else if (st.presenting) stopPresent(); }
-  if (e.key === "ArrowRight" && (byId[st.route] || st.presenting)) step(1);
-  if (e.key === "ArrowLeft" && (byId[st.route] || st.presenting)) step(-1);
+  if (st.presenting) {
+    if (e.key === "ArrowRight") presStep(1);
+    if (e.key === "ArrowLeft") presStep(-1);
+    if (e.key === " ") { e.preventDefault(); setPlaying(!pres.playing); }
+    return;
+  }
+  if (e.key === "ArrowRight" && byId[st.route]) step(1);
+  if (e.key === "ArrowLeft" && byId[st.route]) step(-1);
 });
 
 /* ================= formula popover ================= */
@@ -1396,10 +1435,54 @@ $("b-download").onclick = async () => {
 };
 
 /* ================= presenting ================= */
-function startPresent() { st.presenting = true; if (!byId[st.route]) go(TABLES[0].id); else render();
-  try { const p = document.documentElement.requestFullscreen?.(); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
-function stopPresent() { st.presenting = false; try { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); } catch (e) {} render(); }
-$("b-present").onclick = startPresent; $("p-exit").onclick = stopPresent; $("p-prev").onclick = () => step(-1); $("p-next").onclick = () => step(1);
+/* Self-playing presentation: dashboard first, then every table in order.
+   Each page is scaled to fit the screen so nothing needs scrolling. */
+const SLIDES = () => ["overview"].concat(TABLES.map(t => t.id));
+const pres = { playing: false, ms: 10000, elapsed: 0, last: 0, raf: 0 };
+function slideIdx() { const i = SLIDES().indexOf(st.route); return i < 0 ? 0 : i; }
+function presGo(i) { const s = SLIDES(); pres.elapsed = 0; pres.last = 0; go(s[Math.max(0, Math.min(s.length - 1, i))]); }
+function presStep(d) { presGo(slideIdx() + d); }
+function presTick() {
+  if (!st.presenting || !pres.playing) return;
+  const now = performance.now();
+  if (pres.last) pres.elapsed += now - pres.last;
+  pres.last = now;
+  $("p-bar").style.width = Math.min(100, pres.elapsed / pres.ms * 100) + "%";
+  if (pres.elapsed >= pres.ms) {
+    if (slideIdx() < SLIDES().length - 1) presStep(1);
+    else { setPlaying(false); toast("End of the presentation. Select Replay to start again."); }
+  }
+}
+function setPlaying(on) {
+  pres.playing = on; pres.last = 0;
+  const b = $("p-play"); b.textContent = on ? "❚❚ Pause" : "▶ Play"; b.setAttribute("aria-pressed", String(on));
+  clearInterval(pres.raf); pres.raf = on ? setInterval(presTick, 100) : 0;
+}
+function fitPresent() {
+  const v = $("view"); v.style.zoom = "";
+  if (!st.presenting) return;
+  const bar = document.querySelector(".present-bar");
+  const avail = window.innerHeight - bar.getBoundingClientRect().bottom - 20;
+  const fits = z => { v.style.zoom = z === 1 ? "" : String(z); return v.getBoundingClientRect().height <= avail + 1; };
+  if (fits(1)) return;
+  // scaling reflows the text (lines get longer, so fewer lines), so search for the largest size that fits
+  let lo = 0.35, hi = 1;
+  for (let i = 0; i < 8; i++) { const mid = (lo + hi) / 2; if (fits(mid)) lo = mid; else hi = mid; }
+  fits(lo);
+}
+function startPresent() {
+  if (st.editing) return toast("Save or cancel your changes before presenting.");
+  st.presenting = true; pres.ms = +$("p-speed").value * 1000; presGo(0); render(); setPlaying(true);
+  try { const p = document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+}
+function stopPresent() { setPlaying(false); st.presenting = false; $("view").style.zoom = ""; try { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); } catch (e) {} render(); }
+$("b-present").onclick = startPresent; $("p-exit").onclick = stopPresent;
+$("p-prev").onclick = () => presStep(-1); $("p-next").onclick = () => presStep(1);
+$("p-play").onclick = () => setPlaying(!pres.playing);
+$("p-replay").onclick = () => { presGo(0); setPlaying(true); };
+$("p-speed").onchange = e => { pres.ms = +e.target.value * 1000; };
+window.addEventListener("resize", () => { if (st.presenting) fitPresent(); });
+$("view").addEventListener("load", () => { if (st.presenting) fitPresent(); }, true);
 document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement && st.presenting) { st.presenting = false; render(); } });
 
 /* ================= GitHub Pages mode =================
