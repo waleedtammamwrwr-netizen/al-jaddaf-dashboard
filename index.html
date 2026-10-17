@@ -405,7 +405,6 @@ th .fx { border-color: currentColor; color: var(--navy-ink); }
 .ptimer i { display: block; height: 100%; width: 0; background: var(--accent); }
 .presenting .vh .stepper, .presenting .calc-note, .presenting details.data, .presenting .editbar { display: none !important; }
 .presenting .photos.single img { height: calc(100vh - 210px); min-height: 0; }
-.presenting .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 .btn.danger { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
 .btn.danger:hover { filter: brightness(.97); }
@@ -429,15 +428,34 @@ th .fx { border-color: currentColor; color: var(--navy-ink); }
 .sec b { font-size: 17px; line-height: 1.25; }
 .sec small { font-size: 14px; line-height: 1.45; }
 .sec-f { grid-column: 1 / -1; font-size: 13.5px; padding-top: 9px; margin-top: 2px; }
+/* progress chart tile on the left spanning two rows; the other eight figures in two rows of four */
 .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-@media (min-width: 640px) { .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (min-width: 1400px) { .kpis { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+.kpi-chart { grid-column: 1 / -1; }
+@media (min-width: 640px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } .kpi-chart { grid-column: auto; grid-row: span 2; } }
+@media (min-width: 1100px) { .kpis { grid-template-columns: 1.35fr repeat(4, minmax(0, 1fr)); } }
+.kpi-chart .pbars { gap: 9px; margin: 8px 0 4px; }
+.kpi-chart .pbar em, .kpi-chart .pbar var { font-size: 13px; }
+.kpi-chart .pbar .trk { height: 12px; border-radius: 6px; }
+.kpi-chart .pbar .trk i { border-radius: 6px; }
 .kpi { padding: 13px 15px; gap: 3px; border-radius: 10px; }
 .kpi span { font-size: 14px; }
 .kpi b { font-size: 24px; white-space: nowrap; }
 /* each figure tile sizes its value to the tile width so it always stays on one line */
 .kpi { container-type: inline-size; min-width: 0; }
 @supports (font-size: 1cqi) { .kpi b { font-size: clamp(18px, 16.5cqi, 30px); } }
+.timeline { border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.timeline .chart svg { min-width: 600px; }
+.tl-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 0 16px; font-size: 13.5px; color: var(--ink-2); }
+.tl-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.tl-chips { padding: 10px 16px 0; }
+.tbar { height: 8px; border-radius: 4px; background: var(--c-plan); overflow: hidden; margin: 5px 0 3px; }
+.tbar i { display: block; height: 100%; background: var(--c-act); border-radius: 4px 0 0 4px; }
+.pbars { display: grid; gap: 5px; margin: 4px 0 2px; }
+.pbar { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 6px; }
+.pbar em { font-style: normal; font-size: 11.5px; color: var(--ink-2); width: 3.4em; }
+.pbar var { font-style: normal; font-size: 11.5px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.pbar .trk { height: 8px; border-radius: 4px; background: var(--surface-2); outline: 1px solid var(--line); overflow: hidden; min-width: 30px; }
+.pbar .trk i { display: block; height: 100%; border-radius: 4px; }
 .kpi b .cur { font-style: normal; font-size: .58em; font-weight: 600; color: var(--ink-2); margin-right: 4px; }
 .kpi small { font-size: 13.5px; line-height: 1.4; }
 
@@ -564,6 +582,10 @@ const FX = {
   "contract.remaining": { label: "Time Remaining (days)", expr: "MAX(Completion Date, Revised Completion Date) − Reporting Date", t: "days",
     f: D => dd(latest(D.contract.completion, D.contract.revisedCompletion), D.contract.reportDate),
     sub: D => `MAX(${fmtD(D.contract.completion)}, ${fmtD(D.contract.revisedCompletion)}) − ${fmtD(D.contract.reportDate)}` },
+  "contract.timeUsed": { label: "Time Used (%)", expr: "(Reporting Date − Commencement Date) ÷ (MAX(Completion Date, Revised Completion Date) − Commencement Date) × 100", t: "pct", dp: 1,
+    f: D => { const a = dd(D.contract.reportDate, D.contract.commencement), b = dd(latest(D.contract.completion, D.contract.revisedCompletion), D.contract.commencement); return a == null || !b ? null : Math.max(0, a / b * 100); },
+    sub: D => `(${fmtD(D.contract.reportDate)} − ${fmtD(D.contract.commencement)}) ÷ (MAX(${fmtD(D.contract.completion)}, ${fmtD(D.contract.revisedCompletion)}) − ${fmtD(D.contract.commencement)}) × 100`,
+    note: "Compare with overall progress: work done should keep pace with time used." },
   "forecast.position": { label: "Current Progress Position (days)", expr: "Forecast Completion (Project Team) − MAX(Completion Date, Revised Completion Date)", t: "days",
     f: D => dd(D.forecast.forecastTeam, latest(D.contract.completion, D.contract.revisedCompletion)),
     sub: D => `${fmtD(D.forecast.forecastTeam)} − MAX(${fmtD(D.contract.completion)}, ${fmtD(D.contract.revisedCompletion)})`,
@@ -654,7 +676,7 @@ const TABLES = [
       { group: "Contractual Dates" }, { k: "commencement", label: "Commencement Date", t: "date" }, { k: "completion", label: "Completion Date", t: "date" },
       { calc: "contract.duration" }, { k: "revisedCompletion", label: "Revised Completion Date (if any)", t: "date" },
       { group: "Sectional Milestones" }, { k: "temp", label: "Temp. Power On" }, { k: "wildAir", label: "Wild Air (if applicable)" }, { k: "perm", label: "Permanent Power On" },
-      { calc: "contract.remaining" }],
+      { calc: "contract.remaining" }, { calc: "contract.timeUsed" }],
     sum: D => `Report No. ${D.contract.reportNo || "–"} · ${fmtD(D.contract.reportDate)} · ${fmtCalcPlain("contract.remaining", D)} days remaining` },
   { id: "forecast", s: 1, title: "Progress & Forecast", type: "kv", path: "forecast", size: "narrow",
     fields: [{ calc: "forecast.position" }, { calc: "forecast.eotClaim" }, { k: "eotApproved", label: "EOT Approved (days) by Employer / Engineer", t: "num" },
@@ -910,7 +932,7 @@ function viewTable(t, D) {
       <div class="vh-row"><h2>${esc(t.title)}</h2><div class="stepper">${!edit && st.canWrite !== false && db && t.type !== "photos" || (!edit && t.type === "photos" && assets) ? `<button class="btn primary" type="button" data-act="edit-here"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>Edit this table</button>` : ""}<button class="btn" type="button" data-step="-1"${t.n === 1 ? " disabled" : ""}>Previous</button><button class="btn" type="button" data-step="1"${t.n === TABLES.length ? " disabled" : ""}>Next</button></div></div>
       ${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}</div>
     <article class="card${edit ? " editing" : ""}" style="max-width:${t.size === "narrow" ? "860px" : "none"}"><div class="card-h"><span>${esc(t.title)}</span>${edit ? `<span style="font-weight:600;font-size:12.5px">Editing</span>` : ""}</div>
-      <div class="card-b">${bodyFor(t, D, edit, false)}</div>
+      <div class="card-b">${t.id === "contract" ? timelineChart(D) : ""}${bodyFor(t, D, edit, false)}</div>
       ${hasCalc(t) ? `<div class="calc-note">Cells with <span class="fx" style="margin:0">ƒ</span> are calculated by formula${edit ? " and update as you type" : ""}. Select ƒ to see the equation.</div>` : ""}</article>`;
 }
 function hasCalc(t) { return (t.fields || []).some(f => f.calc) || (t.cols || []).some(c => c.calc) || ["performance", "progress", "series"].includes(t.type); }
@@ -941,10 +963,11 @@ function viewOverview(D) {
   const exp = (D.authorities || []).filter(r => r.expiry && dd(r.expiry, D.contract.reportDate) < 0).length;
   const k = (label, val, small, tone, open) => `<button type="button" class="kpi ${tone || ""}" data-open="${open}" style="text-align:left;font:inherit;color:inherit"><span>${label}</span><b>${val || "–"}</b><small>${small}</small></button>`;
   const kpis = [
-    k("Overall progress", fP(overall(D, "cumAct")), `Planned ${fP(overall(D, "cumPlan"))} · variance ${fP(v)}`, v < 0 ? "bad" : "good", "progstats"),
+    progressKpi(D, v),
     k("SPI", fmtCalcPlain("info.spi", D), "Actual ÷ planned progress", FX["info.spi"].tone(spi), "info"),
-    k("Time remaining", fmtCalcPlain("contract.remaining", D) + " days", `To ${fmtD(latest(D.contract.completion, D.contract.revisedCompletion))}`, "", "contract"),
-    k("Forecast completion", fmtD(D.forecast.forecastTeam), `Slippage ${fDays(slip)} days vs original ${fmtD(D.contract.completion)}`, slip < 0 ? "bad" : "good", "forecast"),
+    timeKpi(D),
+    k("Completion date", fmtD(D.contract.completion), D.contract.revisedCompletion ? `Revised ${fmtD(D.contract.revisedCompletion)}` : "Contractual completion", "", "contract"),
+    k("Forecast completion", fmtD(D.forecast.forecastTeam), `Slippage ${fDays(slip)} days`, slip < 0 ? "bad" : "good", "forecast"),
     k("EOT", `${fmtCalcPlain("forecast.eotClaim", D) || "–"} days`, `Claimed · approved ${D.forecast.eotApproved == null || D.forecast.eotApproved === "" ? "–" : fN(num(D.forecast.eotApproved))}`, "", "eot"),
     k("Critical issues", `${open} open`, `${(D.issues || []).length} logged`, open ? "warn" : "good", "issues"),
     k("HSE manhours", man ? fN(num(man.total)) : "–", `${fat ? fN(num(fat.total) || 0) : "–"} fatalities to date`, fat && num(fat.total) ? "bad" : "good", "hse"),
@@ -953,6 +976,61 @@ function viewOverview(D) {
   return `<div class="vh"><div class="eyebrow">Overview · Report No. ${esc(D.contract.reportNo || "–")} · ${fmtD(D.contract.reportDate)}</div><h2>Project at a glance</h2></div>
     <div class="secs" role="list" aria-label="Dashboard sections">${Object.keys(SECTIONS).map(s => secCard(+s, D)).join("")}</div>
     <div class="kpis">${kpis}</div>`;
+}
+
+/* Contract timeline: commencement to the latest completion date, elapsed vs remaining,
+   with the extension beyond the original completion shown separately. */
+function timelineChart(D) {
+  const c = D.contract, f = D.forecast || {};
+  const start = toD(c.commencement), orig = toD(c.completion), rep = toD(c.reportDate);
+  const endIso = latest(c.completion, c.revisedCompletion, f.forecastTeam), end = toD(endIso);
+  if (!start || !end || end <= start) return "";
+  const W = 960, L = 20, R = 20, pw = W - L - R, y = 64, h = 30;
+  const x = d => L + Math.max(0, Math.min(1, (d - start) / (end - start))) * pw;
+  const xr = rep ? x(rep) : null, xo = orig ? x(orig) : null;
+  let s = `<svg viewBox="0 0 ${W} 172" role="img" aria-label="Project timeline from ${fmtD(c.commencement)} to ${fmtD(endIso)}">`;
+  for (let yr = start.getUTCFullYear(); yr <= end.getUTCFullYear(); yr++) {
+    const d = new Date(Date.UTC(yr, 0, 1)); if (d <= start || d >= end) continue;
+    s += `<line x1="${x(d)}" x2="${x(d)}" y1="${y + h + 4}" y2="${y + h + 52}" style="stroke:var(--c-grid)"/><text x="${x(d) + 4}" y="${y + h + 50}" font-size="14">${yr}</text>`;
+  }
+  s += `<rect x="${L}" y="${y}" width="${pw}" height="${h}" rx="5" style="fill:var(--c-plan)"/>`;
+  if (xo != null && xo < L + pw) s += `<rect x="${xo}" y="${y}" width="${L + pw - xo}" height="${h}" rx="0" style="fill:var(--rag-orange);opacity:.55"/>`;
+  if (xr != null) s += `<rect x="${L}" y="${y}" width="${Math.max(0, xr - L)}" height="${h}" rx="5" style="fill:var(--c-act)"/>`;
+  if (xo != null) s += `<line x1="${xo}" x2="${xo}" y1="${y - 6}" y2="${y + h + 8}" style="stroke:var(--ink-2);stroke-width:1.5;stroke-dasharray:4 3"/>
+    <text x="${xo}" y="${y + h + 26}" text-anchor="middle" font-size="16">Original completion <tspan font-weight="700">${fmtD(c.completion)}</tspan></text>`;
+  if (xr != null) s += `<line x1="${xr}" x2="${xr}" y1="${y - 10}" y2="${y + h + 4}" style="stroke:var(--ink);stroke-width:2.5"/>
+    <text x="${xr > W / 2 ? xr - 8 : xr + 8}" y="${y - 16}" text-anchor="${xr > W / 2 ? "end" : "start"}" font-size="17" font-weight="700" style="fill:var(--ink)">Reporting date ${fmtD(c.reportDate)}</text>`;
+  s += `<text x="${L}" y="${y + h + 26}" font-size="16">Commencement <tspan font-weight="700">${fmtD(c.commencement)}</tspan></text>
+    <text x="${L + pw}" y="${y - 16}" text-anchor="end" font-size="16">${endIso === c.revisedCompletion ? "Revised completion" : "Completion"} <tspan font-weight="700">${fmtD(endIso)}</tspan></text></svg>`;
+  const used = FX["contract.timeUsed"].f(D), work = overall(D, "cumAct");
+  return `<div class="timeline"><div class="chart">${s}</div>
+    <div class="tl-legend"><span><i style="background:var(--c-act)"></i>Time elapsed</span><span><i style="background:var(--c-plan)"></i>Time remaining</span><span><i style="background:var(--rag-orange);opacity:.55"></i>Extension beyond original completion</span></div>
+    <div class="chips tl-chips">${chip("Time used", fP(used, 1) || "–")}${chip("Work done", fP(work) || "–", work != null && used != null && work < used ? "warn" : "good")}${chip("Time remaining", (fmtCalcPlain("contract.remaining", D) || "–") + " days")}</div></div>`;
+}
+
+/* Time remaining tile with a time-used bar (commencement to latest completion) */
+function timeKpi(D) {
+  const used = FX["contract.timeUsed"].f(D), end = latest(D.contract.completion, D.contract.revisedCompletion);
+  const pct = Math.max(0, Math.min(100, used || 0));
+  return `<button type="button" class="kpi" data-open="contract" style="text-align:left;font:inherit;color:inherit"
+      aria-label="Time remaining ${fmtCalcPlain("contract.remaining", D)} days to ${fmtD(end)}; ${fP(used, 1)} of contract time used">
+    <span>Time remaining</span><b>${fmtCalcPlain("contract.remaining", D) || "–"} days</b>
+    <div class="tbar" aria-hidden="true"><i style="width:${pct.toFixed(2)}%"></i></div>
+    <small>${fP(used, 0) || "–"} of time used · to ${fmtD(end)}</small></button>`;
+}
+
+/* Overall progress tile with a planned-vs-actual bar chart (0-100% scale) */
+function progressKpi(D, v) {
+  const plan = overall(D, "cumPlan"), act = overall(D, "cumAct");
+  const w = x => Math.max(0, Math.min(100, x || 0)).toFixed(2) + "%";
+  return `<button type="button" class="kpi kpi-chart ${v < 0 ? "bad" : "good"}" data-open="progstats" style="text-align:left;font:inherit;color:inherit"
+      aria-label="Overall progress: actual ${fP(act)}, planned ${fP(plan)}, variance ${fP(v)}">
+    <span>Overall progress</span><b>${fP(act) || "–"}</b>
+    <div class="pbars" aria-hidden="true">
+      <div class="pbar"><em>Plan</em><div class="trk"><i style="width:${w(plan)};background:var(--c-plan)"></i></div><var>${fP(plan, 1)}</var></div>
+      <div class="pbar"><em>Actual</em><div class="trk"><i style="width:${w(act)};background:var(--c-act)"></i></div><var>${fP(act, 1)}</var></div>
+    </div>
+    <small>Variance ${fP(v)}</small></button>`;
 }
 
 /* ================= sections as icons ================= */
