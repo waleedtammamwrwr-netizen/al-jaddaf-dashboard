@@ -448,6 +448,7 @@ th .fx { border-color: currentColor; color: var(--navy-ink); }
 .tl-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 0 16px; font-size: 13.5px; color: var(--ink-2); }
 .tl-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 .tl-chips { padding: 10px 16px 0; }
+.kpi small .pill { font-style: normal; margin-right: 4px; vertical-align: 1px; }
 .tbar { height: 8px; border-radius: 4px; background: var(--c-plan); overflow: hidden; margin: 5px 0 3px; }
 .tbar i { display: block; height: 100%; background: var(--c-act); border-radius: 4px 0 0 4px; }
 .pbars { display: grid; gap: 5px; margin: 4px 0 2px; }
@@ -599,7 +600,7 @@ const FX = {
     tone: v => v < 0 ? "bad" : "", note: "A number in brackets is a delay against the original completion date." },
   "info.spi": { label: "SPI (Schedule Performance Index)", expr: "Overall Cum. Actual % ÷ Overall Cum. Planned %", t: "num", dp: 2,
     f: D => div(overall(D, "cumAct"), overall(D, "cumPlan")), sub: D => `${fP(overall(D, "cumAct"))} ÷ ${fP(overall(D, "cumPlan"))}`,
-    tone: v => v == null ? "" : v >= 1 ? "good" : v >= 0.95 ? "warn" : "bad", note: "Below 1.00 means progress is behind plan." },
+    tone: v => spiStatus(v).tone, note: "1.00 or more: on schedule · 0.90–0.99: behind schedule · below 0.90: critically behind schedule." },
   "performance.rag": { label: "Programme status", expr: "Delay (months) = − Total Slippage ÷ 30.44 → Red > 6 · Orange 4–6 · Yellow 1–4 · Green < 1", t: "text",
     f: D => { const m = delayMonths(D); return m == null ? null : m > 6 ? "red" : m >= 4 ? "orange" : m >= 1 ? "yellow" : "green"; },
     sub: D => { const s = FX["forecast.slippage"].f(D); return s == null ? "" : `− (${fDays(s)}) ÷ 30.44 = ${fN(delayMonths(D), 1)} months`; },
@@ -941,7 +942,7 @@ function chipsFor(t, D) {
   const c = [];
   if (t.id === "contract") { c.push(chip("Reporting date", fmtD(D.contract.reportDate))); c.push(chip("Time remaining", fmtCalcPlain("contract.remaining", D) + " days")); }
   if (t.id === "forecast") { const s = FX["forecast.slippage"].f(D); c.push(chip("Forecast completion", fmtD(D.forecast.forecastTeam))); c.push(chip("Slippage", fDays(s) + " days", s < 0 ? "bad" : "good")); }
-  if (t.id === "info") { const v = FX["info.spi"].f(D); c.push(chip("SPI", fmtCalcPlain("info.spi", D) || "–", FX["info.spi"].tone(v))); }
+  if (t.id === "info") { const v = FX["info.spi"].f(D), ss = spiStatus(v); c.push(chip("SPI", fmtCalcPlain("info.spi", D) || "–", ss.tone)); if (ss.label) c.push(chip("Schedule", ss.label, ss.tone)); }
   if (t.id === "issues") { const o = (D.issues || []).filter(r => /open/i.test(r.status || "")).length; c.push(chip("Open", o, o ? "warn" : "good")); c.push(chip("Closed", (D.issues || []).filter(r => /closed/i.test(r.status || "")).length, "good")); }
   if (t.id === "milestones") { const late = (D.milestones || []).filter(r => (dd(r.baseline, r.forecast) ?? 0) < 0).length; c.push(chip("Late", late, late ? "bad" : "good")); c.push(chip("Final milestone", fmtD(((D.milestones || []).slice(-1)[0] || {}).forecast))); }
   if (t.id === "authorities" || t.id === "finalnoc") { const rows = getP(D, t.path) || []; const exp = rows.filter(r => r.expiry && dd(r.expiry, D.contract.reportDate) < 0).length;
@@ -964,7 +965,7 @@ function viewOverview(D) {
   const k = (label, val, small, tone, open) => `<button type="button" class="kpi ${tone || ""}" data-open="${open}" style="text-align:left;font:inherit;color:inherit"><span>${label}</span><b>${val || "–"}</b><small>${small}</small></button>`;
   const kpis = [
     progressKpi(D, v),
-    k("SPI", fmtCalcPlain("info.spi", D), "Actual ÷ planned progress", FX["info.spi"].tone(spi), "info"),
+    k("SPI", fmtCalcPlain("info.spi", D), spiStatus(spi).label ? `<em class="pill ${spiStatus(spi).tone}">${spiStatus(spi).label}</em>` : "Actual ÷ planned progress", spiStatus(spi).tone, "info"),
     timeKpi(D),
     k("Completion date", fmtD(D.contract.completion), D.contract.revisedCompletion ? `Revised ${fmtD(D.contract.revisedCompletion)}` : "Contractual completion", "", "contract"),
     k("Forecast completion", fmtD(D.forecast.forecastTeam), `Slippage ${fDays(slip)} days`, slip < 0 ? "bad" : "good", "forecast"),
@@ -1006,6 +1007,16 @@ function timelineChart(D) {
   return `<div class="timeline"><div class="chart">${s}</div>
     <div class="tl-legend"><span><i style="background:var(--c-act)"></i>Time elapsed</span><span><i style="background:var(--c-plan)"></i>Time remaining</span><span><i style="background:var(--rag-orange);opacity:.55"></i>Extension beyond original completion</span></div>
     <div class="chips tl-chips">${chip("Time used", fP(used, 1) || "–")}${chip("Work done", fP(work) || "–", work != null && used != null && work < used ? "warn" : "good")}${chip("Time remaining", (fmtCalcPlain("contract.remaining", D) || "–") + " days")}</div></div>`;
+}
+
+/* SPI schedule status, judged on the SPI as displayed (2 decimals) */
+function spiStatus(v) {
+  if (v == null || !isFinite(v)) return { label: "", tone: "" };
+  const r = Math.round(v * 100) / 100;
+  if (r > 1) return { label: "Ahead of schedule", tone: "good" };
+  if (r >= 1) return { label: "On schedule", tone: "good" };
+  if (r >= 0.9) return { label: "Behind schedule", tone: "warn" };
+  return { label: "Critically behind schedule", tone: "bad" };
 }
 
 /* Time remaining tile with a time-used bar (commencement to latest completion) */
