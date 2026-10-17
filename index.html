@@ -443,6 +443,24 @@ th .fx { border-color: currentColor; color: var(--navy-ink); }
 /* each figure tile sizes its value to the tile width so it always stays on one line */
 .kpi { container-type: inline-size; min-width: 0; }
 @supports (font-size: 1cqi) { .kpi b { font-size: clamp(18px, 16.5cqi, 30px); } }
+.evchart { padding: 16px; border-bottom: 1px solid var(--line); }
+.evbars { display: grid; gap: 10px; }
+.evrow { display: grid; grid-template-columns: minmax(150px, 230px) 1fr minmax(96px, auto); gap: 12px; align-items: center; font-size: 14.5px; }
+.evrow span { color: var(--ink-2); }
+.evrow b { text-align: right; font-variant-numeric: tabular-nums; }
+.evtrk { height: 16px; border-radius: 4px; background: var(--surface-2); outline: 1px solid var(--line); overflow: hidden; }
+.evtrk i { display: block; height: 100%; border-radius: 4px; }
+@media (max-width: 640px) { .evrow { grid-template-columns: 1fr auto; } .evrow .evtrk { grid-column: 1 / -1; grid-row: 2; } }
+/* seven section icons in one row on wide screens: icon above the title */
+@media (min-width: 1100px) {
+  .secs:not(.compact) { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+  .secs:not(.compact) .sec { grid-template-columns: 1fr; padding: 13px; gap: 6px; }
+  .secs:not(.compact) .sec .ico { width: 42px; height: 42px; }
+  .secs:not(.compact) .sec .ico svg { width: 23px; height: 23px; }
+  .secs:not(.compact) .sec b { font-size: 15.5px; }
+  .secs:not(.compact) .sec small { font-size: 13px; }
+  .secs:not(.compact) .sec-f { font-size: 12.5px; }
+}
 .timeline { border-bottom: 1px solid var(--line); padding-bottom: 12px; }
 .timeline .chart svg { min-width: 600px; }
 .tl-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 0 16px; font-size: 13.5px; color: var(--ink-2); }
@@ -587,6 +605,33 @@ const FX = {
     f: D => { const a = dd(D.contract.reportDate, D.contract.commencement), b = dd(latest(D.contract.completion, D.contract.revisedCompletion), D.contract.commencement); return a == null || !b ? null : Math.max(0, a / b * 100); },
     sub: D => `(${fmtD(D.contract.reportDate)} − ${fmtD(D.contract.commencement)}) ÷ (MAX(${fmtD(D.contract.completion)}, ${fmtD(D.contract.revisedCompletion)}) − ${fmtD(D.contract.commencement)}) × 100`,
     note: "Compare with overall progress: work done should keep pace with time used." },
+  /* Earned value: EV is the contractor's cumulative value of work done; BAC and AC are entered in Section 6 */
+  "ev.ev": { label: "Earned Value (EV)", expr: "= Cumulative Value of Work Done (Contractor's Payment Status)", t: "money",
+    f: D => num(D.payment.workDone), sub: D => fN(num(D.payment.workDone), 2) },
+  "ev.pv": { label: "Planned Value (PV)", expr: "Budget at Completion (BAC) × Overall Cum. Planned %", t: "money",
+    f: D => { const b = num(D.ev.bac), p = overall(D, "cumPlan"); return b == null || p == null ? null : b * p / 100; }, sub: D => `${fN(num(D.ev.bac), 2)} × ${fP(overall(D, "cumPlan"))}` },
+  "ev.earned": { label: "Earned (% of BAC)", expr: "EV ÷ BAC × 100", t: "pct", dp: 1,
+    f: D => { const x = div(FX["ev.ev"].f(D), D.ev.bac); return x == null ? null : x * 100; }, sub: D => `${fN(FX["ev.ev"].f(D), 2)} ÷ ${fN(num(D.ev.bac), 2)} × 100` },
+  "ev.spent": { label: "Spent (% of BAC)", expr: "AC ÷ BAC × 100", t: "pct", dp: 1,
+    f: D => { const x = div(D.ev.ac, D.ev.bac); return x == null ? null : x * 100; }, sub: D => `${fN(num(D.ev.ac), 2)} ÷ ${fN(num(D.ev.bac), 2)} × 100` },
+  "ev.cv": { label: "Cost Variance (CV)", expr: "EV − AC", t: "money",
+    f: D => { const e = FX["ev.ev"].f(D), a = num(D.ev.ac); return e == null || a == null ? null : e - a; }, sub: D => `${fN(FX["ev.ev"].f(D), 2)} − ${fN(num(D.ev.ac), 2)}`,
+    tone: v => v == null ? "" : v < 0 ? "bad" : "good", note: "Negative means the work done cost more than its value." },
+  "ev.sv": { label: "Schedule Variance (SV)", expr: "EV − PV", t: "money",
+    f: D => { const e = FX["ev.ev"].f(D), p = FX["ev.pv"].f(D); return e == null || p == null ? null : e - p; }, sub: D => `${fN(FX["ev.ev"].f(D), 2)} − ${fN(FX["ev.pv"].f(D), 2)}`,
+    tone: v => v == null ? "" : v < 0 ? "bad" : "good" },
+  "ev.cpi": { label: "CPI (Cost Performance Index)", expr: "EV ÷ AC", t: "num", dp: 2,
+    f: D => div(FX["ev.ev"].f(D), D.ev.ac), sub: D => `${fN(FX["ev.ev"].f(D), 2)} ÷ ${fN(num(D.ev.ac), 2)}`,
+    tone: v => v == null ? "" : Math.round(v * 100) / 100 >= 1 ? "good" : v >= 0.9 ? "warn" : "bad", note: "1.00 or more: on or under budget · below 1.00: over budget." },
+  "ev.spi": { label: "SPI (cost based)", expr: "EV ÷ PV", t: "num", dp: 2,
+    f: D => div(FX["ev.ev"].f(D), FX["ev.pv"].f(D)), sub: D => `${fN(FX["ev.ev"].f(D), 2)} ÷ ${fN(FX["ev.pv"].f(D), 2)}`, tone: v => spiStatus(v).tone },
+  "ev.eac": { label: "Estimate at Completion (EAC)", expr: "BAC ÷ CPI", t: "money",
+    f: D => div(D.ev.bac, FX["ev.cpi"].f(D)), sub: D => `${fN(num(D.ev.bac), 2)} ÷ ${fN(FX["ev.cpi"].f(D), 2)}` },
+  "ev.etc": { label: "Estimate to Complete (ETC)", expr: "EAC − AC", t: "money",
+    f: D => { const e = FX["ev.eac"].f(D), a = num(D.ev.ac); return e == null || a == null ? null : e - a; }, sub: D => `${fN(FX["ev.eac"].f(D), 2)} − ${fN(num(D.ev.ac), 2)}` },
+  "ev.vac": { label: "Variance at Completion (VAC)", expr: "BAC − EAC", t: "money",
+    f: D => { const b = num(D.ev.bac), e = FX["ev.eac"].f(D); return b == null || e == null ? null : b - e; }, sub: D => `${fN(num(D.ev.bac), 2)} − ${fN(FX["ev.eac"].f(D), 2)}`,
+    tone: v => v == null ? "" : v < 0 ? "bad" : "good", note: "Negative means the project is forecast to finish over budget." },
   "forecast.position": { label: "Current Progress Position (days)", expr: "Forecast Completion (Project Team) − MAX(Completion Date, Revised Completion Date)", t: "days",
     f: D => dd(D.forecast.forecastTeam, latest(D.contract.completion, D.contract.revisedCompletion)),
     sub: D => `${fmtD(D.forecast.forecastTeam)} − MAX(${fmtD(D.contract.completion)}, ${fmtD(D.contract.revisedCompletion)})`,
@@ -649,9 +694,20 @@ const validity = { label: "Validity", expr: "Expiry Date − Reporting Date → 
   sub: (r, i, rows, D) => `${fmtD(r.expiry)} − ${fmtD(D.contract.reportDate)}`,
   show: v => v == null ? NIL : v < 0 ? `<span class="pill bad">Expired</span> <span class="unit">${fN(-v)} days ago</span>` : v <= 60 ? `<span class="pill warn">Expires soon</span> <span class="unit">${fN(v)} days</span>` : `<span class="pill good">Valid</span> <span class="unit">${fN(v)} days left</span>` };
 RX["authorities.validity"] = validity; RX["finalnoc.validity"] = validity;
+RX["costs.remaining"] = { label: "Remaining (AED)", expr: "Budget − Actual to date", t: "money",
+  f: r => (num(r.budget) == null || num(r.actual) == null) ? null : num(r.budget) - num(r.actual), sub: r => `${fN(num(r.budget), 2)} − ${fN(num(r.actual), 2)}`,
+  tone: v => v == null ? "" : v < 0 ? "bad" : "" };
+RX["costs.spentPct"] = { label: "Spent %", expr: "Actual to date ÷ Budget × 100", t: "pct", dp: 1,
+  f: r => { const x = div(r.actual, r.budget); return x == null ? null : x * 100; }, sub: r => `${fN(num(r.actual), 2)} ÷ ${fN(num(r.budget), 2)} × 100`,
+  tone: v => v == null ? "" : v > 100 ? "bad" : v > 90 ? "warn" : "" };
+RX["procurement.float"] = { label: "Float (days)", expr: "Required on Site − Expected / Actual Delivery", t: "days",
+  f: r => dd(r.required, r.expected), sub: r => `${fmtD(r.required)} − ${fmtD(r.expected)}`, tone: v => v == null ? "" : v < 0 ? "bad" : "good",
+  note: "Positive: arrives before it is needed. Brackets: days late." };
+const PROC_STATUS = ["Not started", "Tendering", "Evaluation", "Awarded", "In production", "Delivered"];
+const procPill = v => v ? `<span class="pill ${/delivered|awarded|production/i.test(v) ? "good" : /tender|evaluat/i.test(v) ? "warn" : ""}">${esc(v)}</span>` : NIL;
 
 /* ================= table schema ================= */
-const SECTIONS = { 1: "Project Stakeholders & High-Level Info", 2: "Monthly Status & Progress Trends", 3: "Authorities, Risks & EOT Claims", 4: "Progress & Design Status", 5: "S-Curves: Time, Cost & Manpower" };
+const SECTIONS = { 1: "Project Stakeholders & High-Level Info", 2: "Monthly Status & Progress Trends", 3: "Authorities, Risks & EOT Claims", 4: "Progress & Design Status", 5: "S-Curves: Time, Cost & Manpower", 6: "Cost & Earned Value", 7: "Procurement" };
 const STATUS = ["Complete", "In progress", "Pending", "Not started"];
 const statusPill = v => v ? `<span class="pill ${/complete/i.test(v) ? "good" : /progress|pending/i.test(v) ? "warn" : ""}">${esc(v)}</span>` : NIL;
 const openPill = v => v ? `<span class="pill ${/closed/i.test(v) ? "good" : "warn"}">${esc(v)}</span>` : NIL;
@@ -746,7 +802,26 @@ const TABLES = [
   { id: "photosInt", s: 5, title: "Site Photos (Interior)", type: "photos", path: "photos.interior", sum: D => `${(getP(D, "photos.interior") || []).length} site photos` },
   { id: "signoff", s: 5, title: "Sign-off", type: "kv", path: "signoff", size: "narrow",
     fields: [{ group: "Prepared by (1)" }, { k: "n1", label: "Name" }, { k: "d1", label: "Date", t: "date" }, { group: "Prepared by (2)" }, { k: "n2", label: "Name" }, { k: "d2", label: "Date", t: "date" }],
-    sum: D => [D.signoff.n1, D.signoff.n2].filter(Boolean).join(" · ") || "Not signed yet" }
+    sum: D => [D.signoff.n1, D.signoff.n2].filter(Boolean).join(" · ") || "Not signed yet" },
+
+  { id: "evm", s: 6, title: "Earned Value Summary", type: "kv", path: "ev", size: "narrow",
+    fields: [{ group: "Budget and cost" }, { k: "bac", label: "Contract Sum / Budget at Completion (BAC)", unit: "AED", t: "money" }, { k: "ac", label: "Actual Cost to date (AC)", unit: "AED", t: "money" },
+      { group: "Earned value" }, { calc: "ev.pv" }, { calc: "ev.ev" }, { calc: "ev.earned" }, { calc: "ev.spent" },
+      { group: "Variances and indices" }, { calc: "ev.cv" }, { calc: "ev.sv" }, { calc: "ev.cpi" }, { calc: "ev.spi" },
+      { group: "Forecast at completion" }, { calc: "ev.eac" }, { calc: "ev.etc" }, { calc: "ev.vac" }],
+    sum: D => FX["ev.cpi"].f(D) != null ? `CPI ${fmtCalcPlain("ev.cpi", D)} · EAC AED ${fN(FX["ev.eac"].f(D) / 1e6, 2)}M` : `EV AED ${fN(num(D.payment.workDone) / 1e6, 2)}M · add contract sum and actual cost` },
+  { id: "costs", s: 6, title: "Cost Breakdown", type: "list", path: "costs",
+    cols: [{ k: "head", label: "Cost Head" }, { k: "budget", label: "Budget (AED)", t: "money" }, { k: "committed", label: "Committed (AED)", t: "money" },
+      { k: "actual", label: "Actual to Date (AED)", t: "money" }, { calc: "remaining" }, { calc: "spentPct" }],
+    sum: D => { const rows = D.costs || []; const b = rows.reduce((s, r) => s + (num(r.budget) || 0), 0), a = rows.reduce((s, r) => s + (num(r.actual) || 0), 0);
+      return rows.length ? `${rows.length} cost heads · ${b ? fP(a / b * 100, 1) : "–"} of budget spent` : "No cost heads added yet"; } },
+
+  { id: "procurement", s: 7, title: "Procurement Status", type: "list", path: "procurement", numbered: true,
+    cols: [{ k: "pkg", label: "Package" }, { k: "supplier", label: "Supplier / Subcontractor" }, { k: "status", label: "Status", t: "select", opts: PROC_STATUS, show: procPill },
+      { k: "value", label: "Order Value (AED)", t: "money" }, { k: "required", label: "Required on Site", t: "date" }, { k: "expected", label: "Expected / Actual Delivery", t: "date" },
+      { calc: "float" }, { k: "remarks", label: "Remarks", t: "long" }],
+    sum: D => { const rows = D.procurement || []; const aw = rows.filter(r => /awarded|production|delivered/i.test(r.status || "")).length, late = rows.filter(r => (dd(r.required, r.expected) ?? 0) < 0).length;
+      return rows.length ? `${rows.length} packages · ${aw} awarded · ${late} late` : "No packages added yet"; } }
 ];
 TABLES.forEach((t, i) => t.n = i + 1);
 const byId = Object.fromEntries(TABLES.map(t => [t.id, t]));
@@ -756,7 +831,7 @@ function fmtCalcPlain(key, D) { const c = FX[key]; const v = c.f(D); const s = f
 /* ================= state ================= */
 const EMPTY = () => ({ info: {}, stats: {}, contract: {}, forecast: {}, hse: [], history: [], performance: {}, milestones: [], issues: [], achievements: [],
   authorities: [], finalnoc: [], payment: {}, variations: {}, eot: [], progress: { rows: [], mockup: {}, remarks: "" }, scurve: [], manpower: [],
-  photos: { render: [], exterior: [], interior: [] }, signoff: {}, meta: {} });
+  photos: { render: [], exterior: [], interior: [] }, signoff: {}, ev: {}, costs: [], procurement: [], meta: {} });
 function normalize(d) { const e = EMPTY(); const o = Object.assign(e, d || {}); for (const k of Object.keys(EMPTY())) if (o[k] == null) o[k] = EMPTY()[k];
   o.photos = Object.assign({ render: [], exterior: [], interior: [] }, o.photos || {}); o.progress = Object.assign({ rows: [], mockup: {}, remarks: "" }, o.progress || {}); return o; }
 
@@ -802,7 +877,7 @@ function listBody(t, D, edit, opts = {}) {
       const cls = [isRight(c.t) ? "r" : "", c.t === "long" ? "long" : "", c.mono ? "eq" : "", c.t === "date" || c.t === "month" ? "nw" : ""].join(" ");
       return `<td class="${cls}"${c.hl && !edit ? ` style="background:var(--hl);color:var(--hl-ink);font-weight:600"` : ""}>${edit ? inputFor(`${t.path}.${i}.${c.k}`, c, r[c.k]) : showField(c, r[c.k])}</td>`;
     }).join("")}${edit ? `<td class="rowact"><button type="button" data-act="up" data-path="${t.path}" data-i="${i}" aria-label="Move row ${i + 1} up">↑</button><button type="button" data-act="del" data-path="${t.path}" data-i="${i}" aria-label="Delete row ${i + 1}">×</button></td>` : ""}</tr>`).join("")
-    : `<tr><td class="empty" colspan="${t.cols.length + (t.numbered ? 1 : 0) + (edit ? 1 : 0)}">No rows yet.${edit ? " Use Add row below." : ""}</td></tr>`;
+    : `<tr><td class="empty" colspan="${t.cols.length + (t.numbered ? 1 : 0) + (edit ? 1 : 0)}">No rows yet.${edit ? " Use Add row below." : " Select Edit this table to add the first one."}</td></tr>`;
   return `<div class="scroll"><table class="tbl"><thead>${head}</thead><tbody>${body}</tbody></table></div>${edit ? `<button type="button" class="btn add" data-act="add" data-path="${t.path}" data-table="${t.id}">+ Add row</button>` : ""}`;
 }
 function perfBody(t, D, edit) {
@@ -933,7 +1008,7 @@ function viewTable(t, D) {
       <div class="vh-row"><h2>${esc(t.title)}</h2><div class="stepper">${!edit && st.canWrite !== false && db && t.type !== "photos" || (!edit && t.type === "photos" && assets) ? `<button class="btn primary" type="button" data-act="edit-here"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>Edit this table</button>` : ""}<button class="btn" type="button" data-step="-1"${t.n === 1 ? " disabled" : ""}>Previous</button><button class="btn" type="button" data-step="1"${t.n === TABLES.length ? " disabled" : ""}>Next</button></div></div>
       ${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}</div>
     <article class="card${edit ? " editing" : ""}" style="max-width:${t.size === "narrow" ? "860px" : "none"}"><div class="card-h"><span>${esc(t.title)}</span>${edit ? `<span style="font-weight:600;font-size:12.5px">Editing</span>` : ""}</div>
-      <div class="card-b">${t.id === "contract" ? timelineChart(D) : ""}${bodyFor(t, D, edit, false)}</div>
+      <div class="card-b">${t.id === "contract" ? timelineChart(D) : ""}${t.id === "evm" ? evmChart(D) : ""}${bodyFor(t, D, edit, false)}</div>
       ${hasCalc(t) ? `<div class="calc-note">Cells with <span class="fx" style="margin:0">ƒ</span> are calculated by formula${edit ? " and update as you type" : ""}. Select ƒ to see the equation.</div>` : ""}</article>`;
 }
 function hasCalc(t) { return (t.fields || []).some(f => f.calc) || (t.cols || []).some(c => c.calc) || ["performance", "progress", "series"].includes(t.type); }
@@ -955,6 +1030,15 @@ function chipsFor(t, D) {
     if (r) c.push(chip(`Actual ${fmtM(r.m)}`, fN(num(r.act)))); if (r && num(r.plan) != null) c.push(chip("Planned", fN(num(r.plan)))); if (pk) c.push(chip("Planned peak", `${fN(num(pk.plan))} in ${fmtM(pk.m)}`)); }
   if (t.id === "hse") { const f = (D.hse || []).find(r => /fatal/i.test(r.item || "")); if (f) c.push(chip("Fatalities (total)", fN(num(f.total) || 0), (num(f.total) || 0) ? "bad" : "good")); }
   if (t.id === "eot") { const days = (D.eot || []).reduce((s, r) => s + (num(r.time) || 0), 0); c.push(chip("Days claimed", fN(days))); }
+  if (t.id === "evm") { const cpi = FX["ev.cpi"].f(D);
+    if (cpi != null) { c.push(chip("CPI", fmtCalcPlain("ev.cpi", D), FX["ev.cpi"].tone(cpi))); c.push(chip("EAC", "AED " + fmtCalcPlain("ev.eac", D))); c.push(chip("VAC", "AED " + fmtCalcPlain("ev.vac", D), FX["ev.vac"].tone(FX["ev.vac"].f(D)))); }
+    else c.push(chip("To calculate CPI and EAC", "enter BAC and AC", "warn")); }
+  if (t.id === "costs") { const rows = D.costs || []; const sum = k => rows.reduce((s, r) => s + (num(r[k]) || 0), 0);
+    if (rows.length) { c.push(chip("Budget", "AED " + fN(sum("budget"), 2))); c.push(chip("Committed", "AED " + fN(sum("committed"), 2))); c.push(chip("Actual", "AED " + fN(sum("actual"), 2))); } }
+  if (t.id === "procurement") { const rows = D.procurement || [];
+    if (rows.length) { const aw = rows.filter(r => /awarded|production|delivered/i.test(r.status || "")).length, late = rows.filter(r => (dd(r.required, r.expected) ?? 0) < 0).length;
+      c.push(chip("Awarded", `${aw} of ${rows.length}`, aw < rows.length ? "warn" : "good")); c.push(chip("Late", late, late ? "bad" : "good"));
+      c.push(chip("Order value", "AED " + fN(rows.reduce((s, r) => s + (num(r.value) || 0), 0), 2))); } }
   return c;
 }
 function viewOverview(D) {
@@ -1019,6 +1103,18 @@ function spiStatus(v) {
   return { label: "Critically behind schedule", tone: "bad" };
 }
 
+/* Earned value bars: budget, planned, earned, actual cost and forecast at completion on one scale */
+function evmChart(D) {
+  const items = [["Budget at Completion (BAC)", num(D.ev.bac), "var(--line-strong)"], ["Planned Value (PV)", FX["ev.pv"].f(D), "var(--c-plan)"],
+    ["Earned Value (EV)", FX["ev.ev"].f(D), "var(--c-act)"], ["Actual Cost (AC)", num(D.ev.ac), "var(--rag-orange)"], ["Estimate at Completion (EAC)", FX["ev.eac"].f(D), "var(--ink-2)"]];
+  const max = Math.max(1, ...items.map(i => i[1] || 0));
+  const missing = num(D.ev.bac) == null || num(D.ev.ac) == null;
+  return `<div class="evchart"><div class="evbars">${items.map(([l, v, c]) => `<div class="evrow"><span>${l}</span>
+      <div class="evtrk">${v != null ? `<i style="width:${(v / max * 100).toFixed(2)}%;background:${c}"></i>` : ""}</div>
+      <b>${v != null ? "AED " + fN(v / 1e6, 2) + "M" : "–"}</b></div>`).join("")}</div>
+    ${missing ? `<p class="notice" style="margin:12px 0 0">Enter the <b>Contract Sum (BAC)</b> and <b>Actual Cost to date (AC)</b> with Edit this table. PV, CPI, EAC and the other figures then calculate automatically.</p>` : ""}</div>`;
+}
+
 /* Time remaining tile with a time-used bar (commencement to latest completion) */
 function timeKpi(D) {
   const used = FX["contract.timeUsed"].f(D), end = latest(D.contract.completion, D.contract.revisedCompletion);
@@ -1050,7 +1146,9 @@ const SICON = {
   2: '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/><path d="M7 17l3-3 3 2 4-5"/>',
   3: '<path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
   4: '<path d="M3.5 17a8.5 8.5 0 1 1 17 0"/><path d="M12 17l4.5-5.5"/><circle cx="12" cy="17" r="1.6"/><path d="M2 21h20"/>',
-  5: '<path d="M3 3v18h18"/><path d="M6 17c4 0 5-10 9-10 2.2 0 3 2.5 5 2.5"/><path d="M8 21v-2M12 21v-4M16 21v-3"/>'
+  5: '<path d="M3 3v18h18"/><path d="M6 17c4 0 5-10 9-10 2.2 0 3 2.5 5 2.5"/><path d="M8 21v-2M12 21v-4M16 21v-3"/>',
+  6: '<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/>',
+  7: '<path d="M2 6h11v10H2z"/><path d="M13 9h4l3 3v4h-7"/><circle cx="6" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/>'
 };
 const sIcon = (s, cls = "") => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${SICON[s]}</svg>`;
 function secStatus(s, D) {
@@ -1059,6 +1157,12 @@ function secStatus(s, D) {
     return { text: `${o} open issues · ${late} late milestones`, tone: late ? "bad" : o ? "warn" : "good" }; }
   if (s === 3) { const exp = [...(D.authorities || []), ...(D.finalnoc || [])].filter(r => r.expiry && dd(r.expiry, D.contract.reportDate) < 0).length;
     const days = (D.eot || []).reduce((a, r) => a + (num(r.time) || 0), 0); return { text: `${exp} NOCs expired · ${fN(days)} EOT days claimed`, tone: exp ? "warn" : "good" }; }
+  if (s === 6) { const cpi = FX["ev.cpi"].f(D);
+    if (cpi == null) return { text: `EV AED ${fN(num(D.payment.workDone) / 1e6, 2)}M · add contract sum and actual cost`, tone: "" };
+    return { text: `CPI ${fmtCalcPlain("ev.cpi", D)} · EAC AED ${fN(FX["ev.eac"].f(D) / 1e6, 2)}M`, tone: FX["ev.cpi"].tone(cpi) }; }
+  if (s === 7) { const rows = D.procurement || []; if (!rows.length) return { text: "No packages added yet", tone: "" };
+    const aw = rows.filter(r => /awarded|production|delivered/i.test(r.status || "")).length, late = rows.filter(r => (dd(r.required, r.expected) ?? 0) < 0).length;
+    return { text: `${aw} of ${rows.length} packages awarded · ${late} late`, tone: late ? "bad" : aw < rows.length ? "warn" : "good" }; }
   if (s === 4) { const v = FX["progress.oVar"].f(D); return { text: `${fP(overall(D, "cumAct")) || "–"} actual vs ${fP(overall(D, "cumPlan")) || "–"} planned`, tone: v == null ? "" : v < 0 ? "bad" : "good" }; }
   const r = lastWith(D.scurve, "act"); const gap = r && num(r.plan) != null ? num(r.act) - num(r.plan) : null;
   return { text: r ? `Cum. actual ${fP(num(r.act))} at ${fmtM(r.m)}` : "No S-curve data", tone: gap == null ? "" : gap < 0 ? "bad" : "good" };
@@ -1069,7 +1173,7 @@ function secCard(s, D, compact) {
   return `<button type="button" role="listitem" class="sec${compact ? " compact" : ""}" data-open="s${s}" aria-current="${cur}" aria-label="Section ${s}: ${esc(SECTIONS[s])}. ${esc(st2.text)}. ${n} tables.">
     <span class="ico">${sIcon(s)}</span>
     <span class="sec-t"><span class="k">Section ${s}</span><b>${esc(SECTIONS[s])}</b>${compact ? "" : `<small>${esc(st2.text)}</small>`}</span>
-    ${compact ? "" : `<span class="sec-f"><span class="dot ${st2.tone}"></span>${TONE_WORD[st2.tone] || "Status"} · ${n} tables <span class="go">→</span></span>`}</button>`;
+    ${compact ? "" : `<span class="sec-f"><span class="dot ${st2.tone}"></span>${TONE_WORD[st2.tone] || "Add data"} · ${n} ${n === 1 ? "table" : "tables"} <span class="go">→</span></span>`}</button>`;
 }
 function tilesFor(s, D) {
   return `<div class="tiles">${TABLES.filter(t => t.s === s).map(t => `<button type="button" class="tile" data-open="${t.id}"><span class="tt"><span>${esc(t.title)}</span><i>${String(t.n).padStart(2, "0")}</i></span>
@@ -1223,7 +1327,7 @@ window.addEventListener("hashchange", () => {
 });
 function step(d) { const t = byId[st.route]; const n = t ? t.n + d : (d > 0 ? 1 : TABLES.length); if (n >= 1 && n <= TABLES.length) go(TABLES[n - 1].id); }
 
-const secOf = r => { const m = /^s([1-5])$/.exec(r || ""); return m ? +m[1] : 0; };
+const secOf = r => { const m = /^s([1-7])$/.exec(r || ""); return m ? +m[1] : 0; };
 $("navlist").addEventListener("click", e => { const b = e.target.closest("button[data-id]"); if (b) return go(b.dataset.id); const s = e.target.closest("button[data-sec]"); if (s) go("s" + s.dataset.sec); });
 $("b-all").onclick = () => go("all"); $("b-formulas").onclick = () => go("formulas");
 $("v-overview").onclick = () => go("overview"); $("v-all").onclick = () => go("all"); $("v-formulas").onclick = () => go("formulas");
